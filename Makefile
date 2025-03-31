@@ -28,7 +28,7 @@ vet:
 
 .PHONY: clean
 clean:
-	rm -f app
+	rm -f tmp/*
 
 .PHONY: all
 all: build test lint fmt vet clean

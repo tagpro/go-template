@@ -3,28 +3,31 @@ package config
 import (
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
 )
 
 type Config struct {
 	Port string
 }
 
+// LoadConfig loads config from file. You should be able to use env file for config as well.
+// The default config file is located at ./config/config.yaml.
 func LoadConfig() (*Config, error) {
-	err := godotenv.Load()
+	viper.AddConfigPath("./config")
+	viper.SetConfigName("config")
+	err := viper.ReadInConfig()
 	if err != nil {
-		log.Println("config error: failed to load .env file: %w", err)
-		return nil, fmt.Errorf("config error: failed to load .env file: %w", err)
+		log.Println("config error: failed to load config: %w", err)
+		return nil, fmt.Errorf("config error: failed to load config: %w", err)
 	}
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080" // Default port
+	config := &Config{}
+	err = viper.Unmarshal(config)
+	if err != nil {
+		log.Println("config error: failed to unmarshal config: %w", err)
+		return nil, fmt.Errorf("config error: failed to unmarshal config: %w", err)
 	}
 
-	return &Config{
-		Port: port,
-	}, nil
+	return config, nil
 }

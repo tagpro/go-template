@@ -26,7 +26,12 @@ func (s *Server) StartServer() error {
 	r.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 		// return a templ response with Hello world
 		component := helloworld.Hello("World")
-		component.Render(r.Context(), w)
+		err := component.Render(r.Context(), w)
+		if err != nil {
+			log.Printf("Error rendering component: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	})
 
 	log.Printf("Server listening on port %s", s.config.Port)
