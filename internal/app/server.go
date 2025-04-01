@@ -3,6 +3,7 @@ package app
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/tagpro/go-template/internal/config"
 )
@@ -19,6 +20,6 @@ func NewServer(c *config.Config) (*Server, error) {
 
 func (s *Server) StartServer() error {
 	r := NewRouter()
-	log.Printf("Server listening on port %s", s.config.Port)
-	return http.ListenAndServe(":"+s.config.Port, r)
+	log.Printf("Server listening on port %d", s.config.Port)
+	return http.ListenAndServe(":"+strconv.Itoa(s.config.Port), r)
 }
