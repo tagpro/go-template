@@ -1,3 +1,28 @@
+# A go server template
+
+## Create your new project
+
+Install gonew
+
+```sh
+go install golang.org/x/tools/cmd/gonew@latest
+```
+
+Create your new project
+
+```sh
+gonew github.com/tagpro/go-template <example.com/your.go-project.name>
+```
+
+## Roadmap
+
+- [ ] Add docker
+- [ ] Add healthcheck
+- [ ] Add logging
+- [ ] Add Tracing
+- [ ] Add Monitoring
+- [ ] Add OpenAPI
+
 ## Description
 
 This is a template for a go application that serves go APIs using chi router.
