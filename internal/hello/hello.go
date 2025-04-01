@@ -3,6 +3,7 @@ package hello
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/tagpro/go-template/templates/helloworld"
@@ -27,6 +28,7 @@ type hello struct{}
 
 func (h *hello) Get(w http.ResponseWriter, r *http.Request) {
 	_, err := fmt.Fprintf(w, "Hello, World!")
+	slog.Info("Hello, world ")
 	if err != nil {
 		log.Printf("Error writing response: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -36,6 +38,7 @@ func (h *hello) Get(w http.ResponseWriter, r *http.Request) {
 
 func (h *hello) GetWithName(w http.ResponseWriter, r *http.Request) {
 	name := r.Context().Value(NameKey).(string)
+	slog.Info("Hello", slog.String("name", name))
 	component := helloworld.Hello(name)
 	err := component.Render(r.Context(), w)
 	if err != nil {
