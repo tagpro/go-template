@@ -10,3 +10,10 @@ Also, this also serves as a good source of example to be used in other go applic
 - [go-chi](https://github.com/go-chi/chi)
 - [sqlc](https://github.com/sqlc-dev/sqlc) along with [goose](https://github.com/pressly/goose)
 - [templ](https://github.com/a-h/templ)
+
+## Database setup
+
+1.  Use Goose to generate migration files for your database. An initial migration file without any DDL queries is provided. Add your initial database DDL statements there.
+2.  Run `make db/up` to apply the migration to the latest version (the initial migration in this case).
+3.  Run `make db/gen` to generate the SQLC code based on your database schema.
+4.  After generating the SQLC code, run `go mod tidy` to install any new dependencies introduced by SQLC.
