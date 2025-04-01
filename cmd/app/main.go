@@ -5,6 +5,7 @@ import (
 
 	"github.com/tagpro/go-template/internal/app"
 	"github.com/tagpro/go-template/internal/config"
+	"github.com/tagpro/go-template/pkg/logger"
 )
 
 func main() {
@@ -12,6 +13,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
+
+	logger.InitLogger(config.Logger)
 
 	server, err := app.NewServer(config)
 	if err != nil {
