@@ -11,8 +11,16 @@ import (
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 
+	r.Get("/z/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	r.Get("/z/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	// Define your routes here, for example:
-	r.Route("/hello", func(r chi.Router) {
+	r.Route("/v1/hello", func(r chi.Router) {
 		helloHandler := hello.New()
 		r.Get("/", helloHandler.Get)
 

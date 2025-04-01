@@ -54,6 +54,14 @@ db/down:
 db/gen:
 	sqlc generate
 
+.PHONY: docker/build
+docker/build:
+	docker build -t my-app .
+
+.PHONY: docker/run
+docker/run:
+	docker run -p 8000:8000 -v ./config:/config my-app
+
 .PHONY: help
 help:
 	@echo "Available targets:"
