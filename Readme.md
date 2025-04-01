@@ -8,5 +8,5 @@ Also, this also serves as a good source of example to be used in other go applic
 ## Libraries
 
 - [go-chi](https://github.com/go-chi/chi)
-- [sqlc](https://github.com/sqlc-dev/sqlc)
+- [sqlc](https://github.com/sqlc-dev/sqlc) along with [goose](https://github.com/pressly/goose)
 - [templ](https://github.com/a-h/templ)
