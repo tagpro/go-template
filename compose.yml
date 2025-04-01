@@ -10,6 +10,15 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: app
+  app:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/config
+    depends_on:
+      - db
 
 volumes:
   db_data:
