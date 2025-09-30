@@ -235,20 +235,26 @@ logger:
 **Build image:**
 
 ```bash
-make docker/build
+docker build -t myapp:latest .
 ```
 
 **Run container:**
 
 ```bash
-make docker/run
+docker run -p 8000:8000 -v ./config:/config myapp:latest
 ```
 
 **Using Docker Compose:**
 
 ```bash
+# Production
 docker compose up
+
+# Development (with hot reload)
+docker compose -f compose.dev.yml up
 ```
+
+For detailed Docker documentation, see [DOCKER.md](DOCKER.md).
 
 ## Testing
 

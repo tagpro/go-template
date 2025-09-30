@@ -1,0 +1,67 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+docs/
+GETTING_STARTED.md
+EXAMPLE.md
+TEMPLATE_CHANGES.md
+DOCKER.md
+
+# Build artifacts
+tmp/
+bin/
+app
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test files
+*_test.go
+testdata/
+coverage.out
+*.test
+
+# Development files
+.env
+.env.local
+.env.*.local
+.air.toml
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Docker files (don't need these in the image)
+Dockerfile*
+docker-compose*.yml
+compose*.yml
+.dockerignore
+
+# Generated files (will be generated during build)
+*_templ.go
+
+# Logs
+*.log
+
+# Dependencies (will be downloaded during build)
+vendor/
+
+# Local config (use production config or mount)
+config/config.yml
+config/*.local.yml

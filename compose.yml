@@ -1,7 +1,10 @@
+# Development compose file with hot reload
+# Usage: docker compose -f compose.dev.yml up
+
 services:
   db:
-    image: postgres:16.2
-    restart: always
+    image: postgres:16-alpine
+    restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -10,15 +13,39 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: app
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
   app:
-    build: .
-    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
     volumes:
-      - ./config:/config
+      # Mount source code for hot reload
+      - .:/app
+      # Use named volume for go mod cache
+      - go-mod-cache:/go/pkg/mod
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/app?sslmode=disable
+      - GO_ENV=development
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
 
 volumes:
   db_data:
+  go-mod-cache:
+
+networks:
+  app-network:
+    driver: bridge

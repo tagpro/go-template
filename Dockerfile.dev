@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1
+
+# Development Dockerfile with hot reload support
+# Build: docker build -f Dockerfile.dev -t myapp:dev .
+# Run: docker run -v $(pwd):/app -p 8000:8000 myapp:dev
+
+FROM golang:1.25-alpine
+
+# Install air for hot reload and other dev tools
+RUN apk add --no-cache git ca-certificates tzdata make && \
+    go install github.com/air-verse/air@latest && \
+    go install github.com/a-h/templ/cmd/templ@latest
+
+WORKDIR /app
+
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Run with air for hot reload
+CMD ["air"]

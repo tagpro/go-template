@@ -1,5 +1,10 @@
-.PHONY: generate
-generate:
+# ENV variables that can be overridden
+APP_NAME ?= myapp
+APP_VERSION ?= 1.0.0
+
+
+.PHONY: gen
+gen:
 	go tool templ generate
 
 .PHONY: build
@@ -54,13 +59,21 @@ db/down:
 db/gen:
 	sqlc generate
 
+.PHONY: docker/build/dev
+docker/build/dev:
+	docker build -f Dockerfile.dev -t myapp:dev .
+
+.PHONY: docker/build/prod
+docker/build/prod:
+	docker buildx build --platform linux/amd64,linux/arm64 -t myapp:latest .
+
 .PHONY: docker/build
-docker/build:
-	docker build -t my-app .
+docker/build: docker/build/dev docker/build/prod
+	@echo "Docker images built for development and production."
 
 .PHONY: docker/run
-docker/run:
-	docker run -p 8000:8000 -v ./config:/config my-app
+docker/run: docker/build/dev  # Runs development image locally
+	docker run -v $(pwd):/app -p 8000:8000 myapp:dev
 
 .PHONY: help
 help:

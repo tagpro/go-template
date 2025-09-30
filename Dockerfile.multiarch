@@ -1,0 +1,54 @@
+# syntax=docker/dockerfile:1
+
+# Multi-platform build example
+# Build: docker buildx build --platform linux/amd64,linux/arm64 -t myapp:latest .
+
+# Build stage
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
+# Install build dependencies
+RUN apk add --no-cache git ca-certificates tzdata upx
+
+WORKDIR /build
+
+# Download dependencies
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+# Copy source
+COPY . .
+
+# Build for target platform
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    CGO_ENABLED=0 \
+    GOOS=${TARGETOS} \
+    GOARCH=${TARGETARCH} \
+    go build \
+    -ldflags="-s -w -X main.version=${VERSION:-dev}" \
+    -trimpath \
+    -o app \
+    ./cmd/app
+
+# Compress binary with UPX (optional - can reduce size by ~50%)
+# Uncomment if you want smaller binaries (may increase startup time slightly)
+# RUN upx --best --lzma app
+
+# Final stage
+FROM gcr.io/distroless/static-debian12:nonroot
+
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /build/app /app
+COPY --from=builder /build/config /config
+
+USER nonroot:nonroot
+
+EXPOSE 8000
+
+ENTRYPOINT ["/app"]
